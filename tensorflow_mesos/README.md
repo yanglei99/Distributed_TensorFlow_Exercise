@@ -32,8 +32,7 @@ To run nmist, follow [instruction](https://github.com/tensorflow/ecosystem/tree/
 	sudo hadoop fs -put -f /tmp/data/validation.tfrecords hdfs://$HDFS_HOST:9000/train_dir/mnist_data/validation.tfrecords
 	
 
-Docker Image is built
-### Render the Marathon JSON definition
+#### Render the Marathon JSON definition 
 
 	python render_template.py dist.test.json.jinja > dist.test.json
 	python render_template.py dist.test.summary.json.jinja > dist.test.summary.json
@@ -48,6 +47,6 @@ Docker Image is built
 	curl -XPUT -H 'Content-Type: application/json' -d @mnist.json http://$marathonIp:8080/v2/groups
 
 
-### TensorBoard
+#### TensorBoard
 
-	http://tensorboard.marathon.mesos:6006
+Available at: http://tensorboard.marathon.mesos:6006
