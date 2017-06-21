@@ -4,6 +4,8 @@ This repository contains the exercise of Distributed TensorFlow run on Softlayer
 
 Reference [setting up Mesosphere DC/OS on Softlayer using Terraform](https://github.com/yanglei99/terraform_softlayer/tree/master/dcos)
 
+Reference [runtime topology](images/tensorflow_2.jpg)
+
 
 ## Distributed TensorFlow on Mesos/Marathon
 
