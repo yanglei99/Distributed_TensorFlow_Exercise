@@ -36,6 +36,8 @@ To run nmist, follow [instruction](https://github.com/tensorflow/ecosystem/tree/
 
 #### Render the Marathon JSON definition 
 
+Get [render_template.py](https://github.com/tensorflow/ecosystem/blob/master/render_template.py)
+	
 	python render_template.py dist.test.json.jinja > dist.test.json
 	python render_template.py dist.test.summary.json.jinja > dist.test.summary.json
 	python render_template.py mnist.json.jinja > mnist.json
