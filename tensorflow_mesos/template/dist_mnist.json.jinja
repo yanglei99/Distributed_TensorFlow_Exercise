@@ -1,14 +1,16 @@
-{%- set name = "dist.test" %}
-{%- set image = "yanglei99/tensorflow_test" %}
-{%- set worker_replicas = 2 %}
-{%- set ps_replicas = 1 -%}
+{%- set name = "dist.mnist" %}
+{%- set image = "yanglei99/tensorflow_job" %}
+{%- set worker_replicas = 3 %}
+{%- set ps_replicas = 2 %}
 {%- set dns_domain = "marathon.mesos" %}
 {%- set port = 2333 %}
-{%- set train_dir = "hdfs://HDFS_HOST:9000/train_dir/test" %}
-{%- set jobName = "/dist_test.py" %}
+{%- set train_dir = "/train_dir/dist_mnist/log1" %}
+{%- set data_dir = "/train_dir/dist_mnist/data" %}
+{%- set jobName = "dist_mnist.py" %}
 {%- set tensorboard = true %}
 {%- set cpu = 3 %}
 {%- set mem = 6144 %}
+{%- set max_step = 5000 %}
 
 {%- set replicas = {"worker": worker_replicas, "ps": ps_replicas} -%}
 
@@ -34,27 +36,46 @@
     {
       "id": "{{ job }}-{{ i }}",
       "container": {
+        "type": "DOCKER",
+    	"network": "HOST",
         "docker": {
-          "image": "{{ image }}"
+          "image": "{{ image }}",
+           "forcePullImage": true
         },
-        "network": "HOST",
-        "type": "MESOS"
+		"volumes": [
+			      {
+			    	  "containerPath": "/train_dir",
+			    	  "hostPath": "/shared_data",
+			          "mode": "RW"
+			      }
+		]
       },
-      "args": [ "{{ jobName }}", "--worker_hosts", "{{ worker_hosts() }}", "--ps_hosts", "{{ ps_hosts() }}", "--job_name", "{{ job }}", "--task_index", "{{ i }}", "--log_dir", "{{ train_dir }}"],
+      "env": {
+      		"TF_JOB_NAME": "{{jobName}}",
+      		"TF_JOB_ARGUMENTS": "--max_step {{ max_step }} --worker_hosts {{ worker_hosts() }} --ps_hosts {{ ps_hosts() }} --job_name {{ job }} --task_index {{ i }} --log_dir {{ train_dir }} --data_dir {{ data_dir }}"
+      },
       "cpus": {{ cpu }},
       "mem": {{ mem }},
       "instances": 1
-    }{%- if not loop.last or tensorboard %},{% endif %}
+    }{%- if not loop.last %},{% endif %}
+    {%- endfor %} {%- if job !="ps" %},{% endif %}
     {%- endfor %}
-    {%- endfor %}
+    {%- if tensorboard  %},
     {
       "id": "tensorboard",
       "container": {
+        "type": "DOCKER",
+        "network": "HOST",
         "docker": {
           "image": "{{ image }}"
         },
-        "network": "HOST",
-        "type": "MESOS"
+		"volumes": [
+			      {
+			    	  "containerPath": "/train_dir",
+			    	  "hostPath": "/shared_data",
+			          "mode": "RW"
+			      }
+		]
       },
       "acceptedResourceRoles": ["slave_public"],
       "cmd": "tensorboard --logdir {{ train_dir }}",
@@ -62,5 +83,6 @@
       "mem": {{ mem }},
       "instances": 1
     }
+    {%- endif %}
   ]
 }
