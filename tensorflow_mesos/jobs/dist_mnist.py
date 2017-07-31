@@ -110,7 +110,7 @@ def main(_):
 
       saver = tf.train.Saver()
       summary_op = tf.summary.merge_all()
-      init_op = tf.initialize_all_variables()
+      init_op = tf.global_variables_initializer()
      
 
       enq_ops = []
