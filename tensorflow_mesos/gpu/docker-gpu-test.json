@@ -1,0 +1,15 @@
+{
+    "id": "docker-gpu-test",
+    "cmd": "while [ true ] ; do nvidia-smi; sleep 5; done",
+    "cpus": 1,
+    "mem": 128,
+    "disk": 0,
+    "gpus": 1,
+    "instances": 1,
+    "container": {
+      "type": "MESOS",
+      "docker": {
+        "image": "nvidia/cuda"
+      }
+    }
+}

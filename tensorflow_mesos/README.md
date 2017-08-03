@@ -6,13 +6,15 @@ This repository contains the exercise of Distributed TensorFlow run on Softlayer
 
 The exercise is revised from [TensorFlow Ecosystem - Marathon](https://github.com/tensorflow/ecosystem/tree/master/marathon). It uses [Softlayer File Storage](https://knowledgelayer.softlayer.com/topic/file-storage) as shared file system.  
 
-Reference [setting up Mesosphere DC/OS on Softlayer using Terraform](https://github.com/yanglei99/terraform_softlayer/tree/master/dcos). And make sure `enable_file_storage=true` 
+Reference [setting up Mesosphere DC/OS on Softlayer using Terraform, including GPU on BareMetal](https://github.com/yanglei99/terraform_softlayer/tree/master/dcos). 
+
+Make sure `enable_file_storage=true` 
 
 Here is a sample [runtime topology](images/tensorflow.jpg)
 
 ### Verified
 
-* Mesosphere DC/OS: v1.9.0 (Docker v1.11.2)
+* Mesosphere DC/OS: v1.9.2 (Docker v1.13.1)
 * Tensorflow: v1.2.0
 
 
@@ -75,6 +77,20 @@ Make sure you have enough Agent to run jobs
 
 	curl -XDELETE http://$marathonIp:8080/v2/groups/mnist
 
+
+## GPU
+
+Make sure your DCOS cluster is provisioned with GPU BareMetal Agent.
+
+### Execute GPU TensorFlow Notebook from Marathon JSON 
+
+	curl -XPUT -H 'Content-Type: application/json' -d @gpu/docker-gpu-tf.json http://$marathonIp:8080/v2/groups
+
+You can use SSH tunnel to access the Notebook Web UI
+
+	ssh -i do-key -L 9000:YOUR_BAREMETAL_IP:TF_NOTEBOOK_PORT root@YOUR_BAREMETAL_IP
+	http://localhost:9000/?token=TF_NOTEBOOK_TOKEN
+	
 #### TensorBoard
 
 Available at: http://tensorboard.marathon.mesos:6006

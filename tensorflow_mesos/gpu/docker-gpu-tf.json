@@ -1,0 +1,14 @@
+{
+    "id": "docker-gpu-tf",
+    "cpus": 2,
+    "mem": 4096,
+    "disk": 0,
+    "gpus": 2,
+    "instances": 1,
+    "container": {
+      "type": "MESOS",
+      "docker": {
+        "image": "tensorflow/tensorflow:latest-gpu"
+      }
+    }
+}
