@@ -20,7 +20,13 @@ Here is a sample [runtime topology](images/tensorflow.jpg)
 
 ### Image
 
+#### With CPU Only
+
 Follow instructions in [Dockerfile](Dockerfile) to build Docker Image. Here is the [pre-built image](https://hub.docker.com/r/yanglei99/tensorflow_job/)
+
+#### With GPU
+
+Follow instructions in [Dockerfile_GPU](Dockerfile_GPU) to build Docker Image. Here is the [pre-built image](https://hub.docker.com/r/yanglei99/tensorflow_job_gpu/)
 
 
 ### Run Tensorflow Job
@@ -59,7 +65,7 @@ Render the job python
     python render_template.py template/mnist.json.jinja > mnist.json
     
 
-### Execute Distributed TensorFlow from Marathon JSON 
+#### Execute Distributed TensorFlow from Marathon JSON 
 
 Make sure you have enough Agent to run jobs
 
@@ -78,22 +84,34 @@ Make sure you have enough Agent to run jobs
 	curl -XDELETE http://$marathonIp:8080/v2/groups/mnist
 
 
-## GPU
+#### TensorBoard
+
+Available at: http://tensorboard.marathon.mesos:6006
+	
+
+### GPU Specific
 
 Make sure your DCOS cluster is provisioned with GPU BareMetal Agent.
 
-### Execute GPU TensorFlow Notebook from Marathon JSON 
+#### Execute GPU TensorFlow Notebook from Marathon JSON 
 
-	curl -XPUT -H 'Content-Type: application/json' -d @gpu/docker-gpu-tf.json http://$marathonIp:8080/v2/groups
+	curl -i -H 'Content-Type: application/json' -d@docker-gpu-tf.json $marathonIp:8080/v2/apps
 
 You can use SSH tunnel to access the Notebook Web UI
 
 	ssh -i do-key -L 9000:YOUR_BAREMETAL_IP:TF_NOTEBOOK_PORT root@YOUR_BAREMETAL_IP
 	http://localhost:9000/?token=TF_NOTEBOOK_TOKEN
+
+
+#### Execute Distributed Tensorflow Mnist
+
+Make sure all the prep work is done as indicated above.
+
+    python render_template.py template/mnist_gpu.json.jinja > mnist_gpu.json
+
+	curl -XPUT -H 'Content-Type: application/json' -d @mnist_gpu.json http://$marathonIp:8080/v2/groups
+
+	curl -XDELETE http://$marathonIp:8080/v2/groups/mnist-gpu
 	
-#### TensorBoard
-
-Available at: http://tensorboard.marathon.mesos:6006
-
 ### Known Issues
 
